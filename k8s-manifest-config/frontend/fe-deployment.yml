@@ -1,0 +1,35 @@
+apiVersion: apps/v1     #frontend deployment of law-ai
+kind: Deployment
+metadata:
+  name: fe-deployment
+  labels:
+    app: fe-law-ai
+    env: staging
+  spec: 
+    replicas: 2
+    strategy:
+      type: RollingUpdate
+    selector:
+    matchLabels:
+      app: fe-law-ai
+      env: staging
+    template:
+      metadata:
+      name: fe-law-ai-pod
+      labels:
+        app: fe-law-ai
+        env: staging
+      spec:
+      serviceAccountName: default
+      containers:
+      - name: fe-law-ai-container
+        image: kunalmane/fe-law-ai-project:v1.2
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+          requests:
+            memory: "256Mi"
+            cpu: "250m"

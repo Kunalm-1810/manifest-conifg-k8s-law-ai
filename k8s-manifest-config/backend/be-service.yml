@@ -1,0 +1,17 @@
+#backend service
+apiVersion: v1
+kind: Service
+metadata:
+  name: be-law-ai
+  labels:
+    app: be-law-ai
+    env: staging
+spec:
+  type: ClusterIP
+  selector: 
+    app: be-law-ai
+    env: staging
+  ports:
+  - port: 5000
+    targetPort: 5000
+    
