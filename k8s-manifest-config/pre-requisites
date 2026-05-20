@@ -1,0 +1,157 @@
+pre-requisites 
+ installtion 
+
+git
+docker 
+kind
+kubectl 
+helm
+argocd
+
+git 
+
+sudo apt-get update
+sudo apt-get install git -y
+
+
+Docker → Required for Kind to run containers as cluster nodes.
+
+sudo apt-get update
+sudo apt install docker.io -y
+sudo usermod -aG docker $USER && newgrp docker
+docker --version
+
+docker ps
+
+2 kind
+
+# For AMD64 / x86_64
+
+# [ $(uname -m) = x86_64 ] && curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.31.0/kind-linux-amd64
+
+#  chmod +x ./kind
+
+#  sudo mv ./kind /usr/local/bin/kind
+
+#   kind version
+
+
+
+3 kubectl
+
+#   curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+
+#   sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+
+#   kubectl version --client
+
+4 helm
+
+from script
+
+#     curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-4
+
+#      chmod 700 get_helm.sh
+
+#      ./get_helm.sh
+
+
+        create cluster with kind
+
+                apiVersion: kind.x-k8s.io/v1alpha4
+                kind: Cluster
+                networking:
+                  apiServerAddress: ""
+                  apiServerPort: 33893
+                nodes:
+                  - role: control-plane
+                    image: kindest/node:v1.33.1
+                  - role: worker
+                    image: kindest/node:v1.33.1
+                  - role: worker
+                    image: kindest/node:v1.33.1
+
+
+      # kind create cluster --name argocd-cluster --config kind-config.yml run this command to create the cluster with the above configuration. 
+   
+
+5 argocd via helm repo method
+
+#       helm repo add argo https://argoproj.github.io/argo-helm
+
+#       helm repo update
+
+#       kubectl create namespace argocd
+
+#       helm install argocd argo/argo-cd -n argocd
+
+#       kubectl get pods -n argocd
+#       kubectl get svc -n argocd
+
+#       To access the Argo CD UI, you can port-forward the argocd-server service to your local machine. Run the following command:   
+#      kubectl port-forward svc/argocd-server -n argocd 8080:443 --address=0.0.0.0 &
+
+#     To get the password of argocd fo ui access, run the following command:
+#     kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d   QJC1pXVhd5Ispxnk  
+#     new pasword argo@123
+
+  #      Method 2: Install ArgoCD using Official Manifests (kubectl apply)
+  #      (fastest for demos & learning)
+
+  #      # 1. Create namespace
+  #     # kubectl create namespace argocd
+  #     # 2. Apply ArgoCD installation manifest
+  #      # kubectl apply -n argocd \
+  #      #   -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+  #      # 3. Verify installation
+  #      # kubectl get pods -n argocd
+  #      # kubectl get svc -n argocd
+  #      # 4. Expose ArgoCD server
+  #      # kubectl port-forward svc/argocd-server -n argocd 8080:443 --address=0.0.0.0 &
+  #      # Access → https://<instance_public_ip>:8080
+
+ #       # 5. Get initial password
+ #       # kubectl get secret argocd-initial-admin-secret -n argocd \
+ #       #   -o jsonpath="{.data.password}" | base64 -d && echo
+ #      # Login with:
+
+#        # Username: admin
+#        # Password: (above output)
+
+
+#        # Step 3: Install ArgoCD CLI (Ubuntu/Linux)
+#        # ArgoCD server runs inside Kubernetes, but to interact with it from the terminal you need the ArgoCD CLI (argocd).
+#        # This is separate from the server installation.
+
+#         1. Install ArgoCD CLI
+#         curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+#         sudo install -m 555 argocd-linux-amd64 /usr/local/bin/argocd
+#         rm argocd-linux-amd64
+#         2. Verify installation
+#         Verify installation
+#         argocd version --client
+#         3. Login to ArgoCD CLI
+#         argocd login <instance_public_ip>:8080 --username admin --password <initial_password> --insecure
+#         Note: The --insecure flag is required when using port-forward with self-signed TLS certs. For production, you’d configure proper TLS certs (then --insecure is not needed).
+
+        # 4. Get user info
+        # argocd account get-user-info
+        # Helm vs Manifest Installation
+        # Feature	Helm Install (Method 1)	Manifests (Method 2)
+        # Flexibility	High (override values.yaml)	Low (default configs only)
+        # Ease of Use	Requires Helm	Works with just kubectl
+        # Best for	Production & customization	Quick demo / lab environment
+        # Professional Best Practices
+        # For local demo/testing → use kubectl apply.
+        # For production or enterprise → use Helm (better upgrades & customization).
+        # Always separate namespaces (don’t install into default).
+        # Store Application CRDs in Git repos (GitOps best practice).
+
+
+
+#       add argcocd and kubernetes cluster context to argocd cli
+#       Add the cluster to ArgoCD:
+#       argocd cluster add kind-argocd-cluster --name argocd-cluster --insecure
+#       argocd cluster list
+
+
