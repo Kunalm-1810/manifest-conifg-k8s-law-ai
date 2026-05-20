@@ -2,13 +2,14 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: mongo-pvc
+  namespace: default
   labels:
     app: mongo
     env: staging
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: mongo-storage-class
+  storageClassName: mongo-storage
   resources:
     requests:
       storage: 5Gi
