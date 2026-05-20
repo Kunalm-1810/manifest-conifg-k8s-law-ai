@@ -1,26 +1,24 @@
-apiVersion: apps/v1     #frontend deployment of law-ai
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: fe-deployment
   labels:
     app: fe-law-ai
     env: staging
-  spec: 
-    replicas: 2
-    strategy:
-      type: RollingUpdate
-    selector:
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+  selector:
     matchLabels:
       app: fe-law-ai
       env: staging
-    template:
-      metadata:
-      name: fe-law-ai-pod
+  template:
+    metadata:
       labels:
         app: fe-law-ai
         env: staging
-      spec:
-      serviceAccountName: default
+    spec:
       containers:
       - name: fe-law-ai-container
         image: kunalmane/fe-law-ai-project:v1.2

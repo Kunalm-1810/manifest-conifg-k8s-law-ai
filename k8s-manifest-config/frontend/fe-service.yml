@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: fe-service
+  name: fe-law-ai-service
   labels:
     app: fe-law-ai
     env: staging
@@ -9,7 +9,7 @@ spec:
   type: ClusterIP
   selector:
     app: fe-law-ai
-    env: staging  
+    env: staging
   ports:
   - port: 80
     targetPort: 80
